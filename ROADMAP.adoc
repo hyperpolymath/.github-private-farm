@@ -1,6 +1,6 @@
 = RSR Roadmap: From Foundation to v10+
 Jonathan D.A. Jewell <jonathan@hyperpolymath.org>
-v0.2.0, 2025-12-23
+v0.3.0, 2025-12-24
 :toc: macro
 :toc-title: Contents
 :toclevels: 4
@@ -364,7 +364,27 @@ Move from centralised attestation to decentralised verification:
 
 === Vision
 
-For critical code paths, move beyond testing to mathematical proof. RSR projects can include SPARK proofs, Coq specifications, or TLA+ models.
+For critical code paths, move beyond testing to mathematical proof. The gold standard is *ATS*—where proofs ARE types—with SPARK and proof assistants as pragmatic alternatives.
+
+=== The ATS Philosophy
+
+[quote, Core Insight]
+____
+In ATS, if your code compiles, your proofs are valid. The type system IS the theorem prover.
+____
+
+ATS (Applied Type System) combines:
+
+* *Dependent types*: Types that depend on values (e.g., `array(n)` where `n` is a compile-time value)
+* *Linear types*: Resources that must be used exactly once (no leaks, no double-free, proven at compile time)
+* *Theorem proving*: Propositions encoded as types, proofs as programs
+
+This means:
+
+* Memory safety without garbage collection—*proven*
+* Array bounds checked at compile time—*proven*
+* Resource cleanup guaranteed—*proven*
+* If it compiles, the invariants hold
 
 === Verification Tiers
 
@@ -384,16 +404,44 @@ For critical code paths, move beyond testing to mathematical proof. RSR projects
 | Formal specification
 | TLA+, Alloy, or Z specifications
 
-| Platinum
+| Platinum (ATS)
+| Proofs-as-types
+| ATS dependent/linear types—proof IS compilation
+
+| Platinum (Alt)
 | Machine-checked proofs
-| Coq, Lean, Isabelle proofs
+| Coq, Lean, Isabelle (external provers)
+|===
+
+=== Why ATS Over External Provers
+
+[cols="1,2,2", options="header"]
+|===
+| Aspect | ATS | Coq/Lean/Isabelle
+
+| Proof location
+| IN the types (inseparable from code)
+| BESIDE the code (separate proof files)
+
+| Proof maintenance
+| Automatic (change code = change proof)
+| Manual (proofs can drift from code)
+
+| Runtime overhead
+| Zero (compiles to C)
+| Extraction can introduce overhead
+
+| Learning curve
+| Steep (but one system to learn)
+| Steep (two systems: code + prover)
 |===
 
 === Integration Points
 
-* CI validates that specifications match implementation
-* Proofs are part of the provenance chain
-* Formal specs are versioned alongside code
+* CI compiles ATS code (compilation = verification)
+* Linear type checking enforces resource safety
+* Dependent types encode invariants in function signatures
+* Falls back to SPARK/Coq for legacy or team-pragmatic code
 
 === Implementation Path
 
@@ -401,16 +449,28 @@ For critical code paths, move beyond testing to mathematical proof. RSR projects
 |===
 | Task | Description | Priority
 
+| ATS CI Integration
+| Compile ATS code with `patscc`, verify proofs via compilation
+| P0
+
+| ATS Templates
+| RSR templates for common patterns (safe arrays, resources, protocols)
+| P1
+
 | SPARK CI Integration
-| Validate Ada/SPARK contracts in CI
+| Validate Ada/SPARK contracts in CI (pragmatic fallback)
 | P1
 
 | TLA+ Toolbox
-| CI for TLA+ model checking
+| CI for TLA+ model checking (specification layer)
 | P2
 
 | Coq/Lean Integration
-| Proof verification in CI
+| Proof verification in CI (when external provers needed)
+| P2
+
+| ATS-to-Rust FFI
+| Safe interop between ATS and Rust codebases
 | P2
 
 | Spec-to-Code Linking
@@ -515,9 +575,10 @@ RSR as the foundation for ethical AI development:
 
 Unified formal specification across RSR languages:
 
-* Rust contracts ↔ Ada/SPARK ↔ Haskell types
+* ATS dependent types ↔ Rust invariants ↔ SPARK contracts ↔ Haskell types
 * Automatic property translation
 * Cross-language proof portability
+* ATS as the "proof source" with extraction to other languages
 
 ---
 
@@ -566,7 +627,7 @@ These are aspirational milestones, not commitments. Development is driven by com
 
 | v9.0 (Q1 2030)
 | Formal Verification
-| SPARK/TLA+/Coq integration
+| ATS proofs-as-types, SPARK/TLA+ fallbacks
 
 | v10.0 (2030+)
 | Self-Sovereign Software
@@ -600,6 +661,7 @@ See link:CONTRIBUTING.md[CONTRIBUTING.md] to get started.
 
 == References
 
+* https://www.ats-lang.org[ATS (Applied Type System)] — Proofs-as-types, dependent + linear types
 * https://slsa.dev[SLSA Framework]
 * https://sigstore.dev[Sigstore]
 * https://guix.gnu.org/manual/en/html_node/Invoking-guix-build.html[Guix Build System]
@@ -615,4 +677,4 @@ See link:CONTRIBUTING.md[CONTRIBUTING.md] to get started.
 _The future of software is verifiable, consent-aware, and trustworthy by default._
 
 [.text-center]
-Version History: 2025-12-23 (v0.2.0) • Initial vision document
+Version History: 2025-12-24 (v0.3.0) • Added ATS as Tier 0 verification language

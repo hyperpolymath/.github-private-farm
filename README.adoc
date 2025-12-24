@@ -1,6 +1,6 @@
 = RSR Template Repository
 Jonathan D.A. Jewell <jonathan@hyperpolymath.org>
-v0.2.0, 2025-12-23
+v0.3.0, 2025-12-24
 :toc: macro
 :toc-title: Contents
 :toclevels: 4
@@ -234,6 +234,18 @@ gha -> sig : SLSA attestation
 
 RSR enforces a curated language hierarchy based on safety, expressiveness, and ecosystem health.
 
+==== Tier 0: Verification Platinum
+
+[cols="1,3", options="header"]
+|===
+| Language | Use Case
+
+| *ATS*
+| Proofs-as-types. Dependent types + linear types = memory safety, bounds checking, and resource management proven at compile time. If it compiles, it's correct. Compiles to C for zero overhead.
+|===
+
+NOTE: ATS has a steep learning curve and minimal ecosystem. Use when correctness is non-negotiable and you can invest in the type-level proofs.
+
 ==== Tier 1: Gold Standard (Preferred)
 
 [cols="1,3", options="header"]
@@ -247,13 +259,13 @@ RSR enforces a curated language hierarchy based on safety, expressiveness, and e
 | Low-level systems, replacing C/C++. Comptime metaprogramming, no hidden control flow.
 
 | *Ada/SPARK*
-| Safety-critical systems, formal verification, aerospace/defence.
+| Safety-critical systems, formal verification with contracts. Industry-proven in aerospace/defence/rail. Pragmatic alternative when ATS is impractical.
 
 | *Haskell*
-| Pure functional, type-heavy domains, parsers, compilers.
+| Pure functional, type-heavy domains, parsers, compilers. Strong types but not dependent.
 
 | *Elixir*
-| Distributed systems, fault-tolerant applications, real-time.
+| Distributed systems, fault-tolerant applications, real-time. BEAM VM reliability.
 
 | *ReScript*
 | Frontend when JavaScript interop needed. Sound type system, JS output.
