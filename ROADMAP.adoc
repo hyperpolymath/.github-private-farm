@@ -1,6 +1,6 @@
 = RSR Roadmap: From Foundation to v10+
 Jonathan D.A. Jewell <jonathan@hyperpolymath.org>
-v0.4.0, 2025-12-24
+v0.2.0, 2025-12-23
 :toc: macro
 :toc-title: Contents
 :toclevels: 4
@@ -364,29 +364,7 @@ Move from centralised attestation to decentralised verification:
 
 === Vision
 
-For critical code paths, move beyond testing to mathematical proof. The gold standard is *Idris 2*—where proofs ARE types and Quantitative Type Theory gives you fine-grained control over resource usage—with SPARK and proof assistants as pragmatic alternatives.
-
-=== The Idris 2 Philosophy
-
-[quote, Core Insight]
-____
-In Idris 2, if your code compiles, your proofs are valid. The type system IS the theorem prover. Quantitative Type Theory means you control exactly how many times each value is used.
-____
-
-Idris 2 with Quantitative Type Theory (QTT) combines:
-
-* *Dependent types*: Types that depend on values (e.g., `Vect n a` — a vector of exactly `n` elements)
-* *Quantitative types*: Resources annotated with usage (0 = erased, 1 = linear, ω = unrestricted)
-* *Totality checking*: First-class guarantee that functions terminate and cover all cases
-* *Theorem proving*: Propositions encoded as types, proofs as programs
-
-This means:
-
-* Memory safety with fine-grained control—*proven*
-* Compile-time proofs that vanish at runtime (0 quantity)—*zero overhead*
-* Resource cleanup guaranteed (1 quantity)—*proven*
-* If it compiles, the invariants hold
-* If it's total, it terminates
+For critical code paths, move beyond testing to mathematical proof. RSR projects can include SPARK proofs, Coq specifications, or TLA+ models.
 
 === Verification Tiers
 
@@ -406,49 +384,16 @@ This means:
 | Formal specification
 | TLA+, Alloy, or Z specifications
 
-| Platinum (Idris 2)
-| Proofs-as-types + QTT
-| Idris 2 dependent types + quantities—proof IS compilation
-
-| Platinum (Alt)
+| Platinum
 | Machine-checked proofs
-| Coq, Lean, Isabelle (external provers)
-|===
-
-=== Why Idris 2 Over External Provers
-
-[cols="1,2,2", options="header"]
-|===
-| Aspect | Idris 2 | Coq/Lean/Isabelle
-
-| Proof location
-| IN the types (inseparable from code)
-| BESIDE the code (separate proof files)
-
-| Proof maintenance
-| Automatic (change code = change proof)
-| Manual (proofs can drift from code)
-
-| Resource control
-| QTT quantities (0, 1, ω) built-in
-| Must encode manually or use plugins
-
-| Erasure
-| 0-quantity proofs vanish at runtime
-| Extraction phase can be unpredictable
-
-| Learning curve
-| Steep (but one system to learn, great book)
-| Steep (two systems: code + prover)
+| Coq, Lean, Isabelle proofs
 |===
 
 === Integration Points
 
-* CI compiles Idris 2 code (compilation = verification)
-* Quantity checking enforces resource safety (1 = linear)
-* 0-quantity proofs exist at compile time, erased at runtime
-* Totality checker ensures termination
-* Falls back to SPARK/Coq for legacy or team-pragmatic code
+* CI validates that specifications match implementation
+* Proofs are part of the provenance chain
+* Formal specs are versioned alongside code
 
 === Implementation Path
 
@@ -456,28 +401,16 @@ This means:
 |===
 | Task | Description | Priority
 
-| Idris 2 CI Integration
-| Compile Idris 2 code, verify proofs via compilation, check totality
-| P0
-
-| Idris 2 Templates
-| RSR templates for common patterns (safe arrays, protocols, state machines)
-| P1
-
 | SPARK CI Integration
-| Validate Ada/SPARK contracts in CI (pragmatic fallback)
+| Validate Ada/SPARK contracts in CI
 | P1
 
 | TLA+ Toolbox
-| CI for TLA+ model checking (specification layer)
+| CI for TLA+ model checking
 | P2
 
 | Coq/Lean Integration
-| Proof verification in CI (when external provers needed)
-| P2
-
-| Idris 2-to-Rust FFI
-| Safe interop between Idris 2 (via RefC) and Rust codebases
+| Proof verification in CI
 | P2
 
 | Spec-to-Code Linking
@@ -582,10 +515,9 @@ RSR as the foundation for ethical AI development:
 
 Unified formal specification across RSR languages:
 
-* Idris 2 dependent types ↔ Rust invariants ↔ SPARK contracts ↔ Haskell types
+* Rust contracts ↔ Ada/SPARK ↔ Haskell types
 * Automatic property translation
 * Cross-language proof portability
-* Idris 2 as the "proof source" with multiple backends (Scheme, RefC, JS)
 
 ---
 
@@ -634,7 +566,7 @@ These are aspirational milestones, not commitments. Development is driven by com
 
 | v9.0 (Q1 2030)
 | Formal Verification
-| Idris 2 proofs-as-types + QTT, SPARK/TLA+ fallbacks
+| SPARK/TLA+/Coq integration
 
 | v10.0 (2030+)
 | Self-Sovereign Software
@@ -668,8 +600,6 @@ See link:CONTRIBUTING.md[CONTRIBUTING.md] to get started.
 
 == References
 
-* https://www.idris-lang.org[Idris 2] — Proofs-as-types with Quantitative Type Theory
-* https://github.com/idris-lang/Idris2[Idris 2 GitHub] — Active development
 * https://slsa.dev[SLSA Framework]
 * https://sigstore.dev[Sigstore]
 * https://guix.gnu.org/manual/en/html_node/Invoking-guix-build.html[Guix Build System]
@@ -685,4 +615,4 @@ See link:CONTRIBUTING.md[CONTRIBUTING.md] to get started.
 _The future of software is verifiable, consent-aware, and trustworthy by default._
 
 [.text-center]
-Version History: 2025-12-24 (v0.4.0) • Switched to Idris 2 (QTT) as Tier 0 verification language
+Version History: 2025-12-23 (v0.2.0) • Initial vision document
