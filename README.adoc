@@ -1,217 +1,493 @@
 = RSR Template Repository
-:toc:
+Jonathan D.A. Jewell <jonathan@hyperpolymath.org>
+v0.2.0, 2025-12-23
+:toc: macro
+:toc-title: Contents
+:toclevels: 4
+:icons: font
+:source-highlighter: rouge
+:experimental:
 :sectnums:
+:sectanchors:
 
-// Badges
+[.lead]
+*The canonical template for building secure, consent-aware, provenance-tracked software.*
+
 image:https://img.shields.io/badge/RSR-Infrastructure-cd7f32[RSR Infrastructure]
 image:https://img.shields.io/badge/Phase-Maintenance-brightgreen[Phase]
 image:https://img.shields.io/badge/License-AGPL%20OR%20Palimpsest-blue[License]
 image:https://img.shields.io/badge/Guix-Primary-purple?logo=gnu[Guix]
+image:https://img.shields.io/badge/Consent--Aware-HTTP%20430-green[Consent-Aware]
+image:https://img.shields.io/badge/Provenance-SLSA%20L3-purple[SLSA Level 3]
 
-== Overview
+toc::[]
 
-**The canonical template for RSR (Rhodium Standard Repository) projects.**
+== The Vision
 
-This repository provides the standardized structure, configuration, and tooling for all 139 repos in the hyperpolymath ecosystem. Use it to:
+[quote, Core Philosophy]
+____
+Software is a palimpsest—a living document layered with the contributions of many hands across time.
+We honour that by making *security non-negotiable*, *consent explicit*, and *provenance traceable*.
+____
 
-* Bootstrap new projects with RSR compliance
-* Reference the standard directory structure
-* Copy configuration templates (justfile, STATE.scm, etc.)
+=== What Problem Does RSR Solve?
 
-== Quick Start
+Modern open-source development faces existential threats:
 
-[source,bash]
-----
-# Clone the template
-git clone https://github.com/hyperpolymath/RSR-template-repo my-project
-cd my-project
-
-# Remove template git history
-rm -rf .git
-git init
-
-# Customize
-sed -i 's/RSR-template-repo/my-project/g' justfile guix.scm README.adoc
-
-# Enter development environment
-guix shell -D -f guix.scm
-
-# Validate compliance
-just validate-rsr
-----
-
-== What's Included
-
-[cols="1,3"]
+[cols="1,2,2", options="header"]
 |===
-|File/Directory |Purpose
+| Threat | Example | RSR Response
 
-|`.editorconfig`
-|Editor configuration (indent, charset)
+| *Supply Chain Attacks*
+| SolarWinds, Log4Shell, XZ Utils backdoor
+| SHA-pinned dependencies, SLSA attestations, minimal dependency graphs
 
-|`.gitignore`
-|Standard ignore patterns
+| *AI Training Without Consent*
+| Code scraped for LLMs without attribution
+| Consent-Aware HTTP (`.well-known/ai.txt`), HTTP 430 proposal
 
-|`.guix-channel`
-|Guix channel definition
+| *Security Theatre*
+| Fancy badges, no real protection
+| Automated enforcement via CI, not optional guidelines
 
-|`.well-known/`
-|RFC-compliant metadata (security.txt, ai.txt, humans.txt)
+| *Dependency Hell*
+| 1,500 packages for "left-pad"
+| Curated language choices that reduce transitive dependencies
 
-|`docs/`
-|Documentation directory
-
-|`guix.scm`
-|Guix package definition
-
-|`justfile`
-|Task runner with 50+ recipes
-
-|`LICENSE.txt`
-|AGPL + Palimpsest dual license
-
-|`README.adoc`
-|This file
-
-|`RSR_COMPLIANCE.adoc`
-|Compliance tracking
-
-|`STATE.scm`
-|Project state checkpoint
+| *Unmaintainable Complexity*
+| Polyglot chaos, inconsistent tooling
+| Standardised structure, reproducible environments via Guix/Nix
 |===
 
-== Justfile Features
+=== The Three Pillars of RSR
 
-The template justfile provides:
+==== 1. Security-First
 
-* **~10 billion recipe combinations** via matrix recipes
-* **Cookbook generation**: `just cookbook` → `docs/just-cookbook.adoc`
-* **Man page generation**: `just man` → `docs/man/project.1`
-* **RSR validation**: `just validate-rsr`
-* **STATE.scm management**: `just state-touch`, `just state-phase`
-* **Container support**: `just container-build`, `just container-push`
-* **CI matrix**: `just ci-matrix [stage] [depth]`
+Not security-as-an-afterthought. Security as the foundation:
 
-=== Key Recipes
+* *SHA-pinned Actions*: Every GitHub Action pinned to immutable commit SHA
+* *Secret Scanning*: Gitleaks + TruffleHog in pre-commit and CI
+* *Dependency Firewall*: Automated CVE detection, licence compliance, provenance verification
+* *RFC 9116 Compliance*: Valid `security.txt` with expiry monitoring
+* *Zero Trust CI*: Minimal permissions, OIDC authentication, signed attestations
 
-[source,bash]
-----
-just                # Show all recipes
-just help <recipe>  # Detailed help
-just info           # Project info
-just combinations   # Show matrix options
+==== 2. Consent-Aware
 
-just build          # Build (debug)
-just test           # Run tests
-just quality        # Format + lint + test
-just ci             # Full CI pipeline
-
-just validate       # RSR + STATE validation
-just docs           # Generate all docs
-just cookbook       # Generate justfile docs
-
-just guix-shell     # Guix dev environment
-just container-build # Build container
-----
-
-== Directory Structure
+Data use requires explicit consent. This isn't philosophy—it's infrastructure:
 
 [source]
 ----
-project/
-├── .editorconfig          # Editor settings
-├── .gitignore             # Git ignore
-├── .guix-channel          # Guix channel
-├── .well-known/           # RFC metadata
-│   ├── ai.txt
-│   ├── humans.txt
-│   └── security.txt
-├── config/                # Nickel configs (optional)
-├── docs/                  # Documentation
-│   ├── generated/
-│   ├── man/
-│   └── just-cookbook.adoc
-├── guix.scm               # Guix package
-├── justfile               # Task runner
-├── LICENSE.txt            # Dual license
-├── README.adoc            # Overview
-├── RSR_COMPLIANCE.adoc    # Compliance
-├── src/                   # Source code
-├── STATE.scm              # State checkpoint
-└── tests/                 # Tests
+.well-known/
+├── ai.txt              # Machine-readable AI policy (robots.txt for LLMs)
+├── consent-required.txt # HTTP 430 Consent Required declaration
+├── provenance.json     # Cryptographic provenance record
+├── humans.txt          # The humans behind the code
+└── security.txt        # RFC 9116 security contact
 ----
 
-== RSR Compliance
+*Consent Levels*:
 
-=== Language Tiers
+[cols="1,3", options="header"]
+|===
+| Level | What It Means
 
-* **Tier 1** (Gold): Rust, Elixir, Zig, Ada, Haskell, ReScript
-* **Tier 2** (Silver): Nickel, Racket, Guile Scheme, Nix
-* **Infrastructure**: Guix channels, derivations
+| Level 1: Public
+| Open viewing, linking, indexing—no consent needed
 
-=== Required Files
+| Level 2: Attributed
+| Citations, embeddings, references—attribution required
 
-* `.editorconfig`
-* `.gitignore`
-* `justfile`
-* `README.adoc`
-* `RSR_COMPLIANCE.adoc`
-* `LICENSE.txt` (AGPL + Palimpsest)
-* `.well-known/security.txt`
-* `.well-known/ai.txt`
-* `.well-known/humans.txt`
-* `guix.scm` OR `flake.nix`
+| Level 3: Commercial
+| Commercial use—explicit consent required
 
-=== Prohibited
+| Level 4: AI Training
+| ML model training, fine-tuning—explicit consent + token required
 
-* Python outside `salt/` directory
-* TypeScript/JavaScript (use ReScript)
-* CUE (use Guile/Nickel)
-* `Dockerfile` (use `Containerfile`)
+| Level 5: Derivative
+| Modified versions—governed by licence (AGPL copyleft)
+|===
 
-== STATE.scm
+==== 3. Provenance-Tracked
 
-The STATE.scm file tracks project state:
+Every byte has a story. We tell it:
+
+* *SLSA Level 3*: Hermetic builds, verified sources, attestation predicates
+* *Sigstore Integration*: Keyless signing with transparency logs
+* *Forge Mirroring*: Canonical source with verified mirrors
+* *codemeta.json*: Machine-readable project metadata
+
+== How It Works
+
+=== Repository Anatomy
+
+[source]
+----
+.github-private-farm/
+│
+├── .claude/                          # AI Assistant Configuration
+│   └── CLAUDE.md                     # Coding guidelines for AI tools
+│
+├── .github/
+│   ├── ISSUE_TEMPLATE/               # Structured issue reporting
+│   │   ├── bug_report.md
+│   │   ├── feature_request.md
+│   │   ├── documentation.md
+│   │   └── question.md
+│   ├── workflows/
+│   │   ├── codeql.yml                # Static analysis (SAST)
+│   │   ├── quality.yml               # Code quality checks
+│   │   ├── rsr-antipattern.yml       # Language policy enforcement
+│   │   ├── scorecard.yml             # OpenSSF Scorecard
+│   │   ├── security-policy.yml       # Security validation
+│   │   └── wellknown-enforcement.yml # RFC compliance
+│   ├── dependabot.yml                # Automated dependency updates
+│   └── FUNDING.yml                   # Sponsorship configuration
+│
+├── .well-known/                      # RFC-Compliant Metadata
+│   ├── ai.txt                        # AI usage policy
+│   ├── consent-required.txt          # Consent framework
+│   └── provenance.json               # Supply chain provenance
+│
+├── .gitlab-ci.yml                    # GitLab CI (mirror support)
+├── .guix-channel                     # Guix channel definition
+├── .editorconfig                     # Editor configuration
+│
+├── codemeta.json                     # Machine-readable metadata
+├── copilot-instructions.md           # Copilot/AI review guidelines
+│
+├── CONTRIBUTING.md                   # Contribution guidelines
+├── CODE_OF_CONDUCT.md                # Community standards
+├── ROADMAP.adoc                      # Vision and future plans
+├── RSR_COMPLIANCE.adoc               # Compliance status
+├── SECURITY.md                       # Security policy
+│
+└── README.adoc                       # This file
+----
+
+=== The CI/CD Pipeline
+
+[plantuml, ci-pipeline, svg]
+....
+@startuml
+!theme plain
+skinparam backgroundColor transparent
+skinparam componentStyle rectangle
+
+title RSR CI/CD Security Pipeline
+
+actor Developer as dev
+collections "Pre-commit\nHooks" as pch
+queue "GitHub\nActions" as gha
+database "Artifact\nRegistry" as ar
+cloud "Sigstore" as sig
+
+dev -> pch : git commit
+note right of pch : gitleaks, editorconfig
+
+pch -> gha : git push
+note right of gha
+  • CodeQL (SAST)
+  • TruffleHog (secrets)
+  • Dependency Review
+  • RSR Anti-Pattern
+  • OpenSSF Scorecard
+  • Well-Known Validation
+end note
+
+gha -> ar : build artefacts
+gha -> sig : SLSA attestation
+@enduml
+....
+
+==== Workflow Descriptions
+
+[cols="1,2,1", options="header"]
+|===
+| Workflow | Purpose | Trigger
+
+| `codeql.yml`
+| Static analysis for security vulnerabilities
+| Push, PR, Schedule
+
+| `quality.yml`
+| Secret scanning, TODO detection, large file check
+| Push, PR
+
+| `rsr-antipattern.yml`
+| Enforces language policy (blocks TS, Go, Python)
+| Push, PR
+
+| `scorecard.yml`
+| OpenSSF security best practices score
+| Push, Schedule
+
+| `security-policy.yml`
+| Validates security file integrity
+| Push, PR
+
+| `wellknown-enforcement.yml`
+| RFC 9116 compliance, expiry monitoring
+| Push, PR, Weekly cron
+|===
+
+=== Language Policy
+
+RSR enforces a curated language hierarchy based on safety, expressiveness, and ecosystem health.
+
+==== Tier 1: Gold Standard (Preferred)
+
+[cols="1,3", options="header"]
+|===
+| Language | Use Case
+
+| *Rust*
+| Systems programming, CLI tools, WASM, performance-critical code. Memory-safe without GC.
+
+| *Zig*
+| Low-level systems, replacing C/C++. Comptime metaprogramming, no hidden control flow.
+
+| *Ada/SPARK*
+| Safety-critical systems, formal verification, aerospace/defence.
+
+| *Haskell*
+| Pure functional, type-heavy domains, parsers, compilers.
+
+| *Elixir*
+| Distributed systems, fault-tolerant applications, real-time.
+
+| *ReScript*
+| Frontend when JavaScript interop needed. Sound type system, JS output.
+|===
+
+==== Tier 2: Silver (Acceptable)
+
+[cols="1,3", options="header"]
+|===
+| Language | Use Case
+
+| *Guile Scheme*
+| Configuration, scripting, Guix packages, STATE.scm
+
+| *Nickel*
+| Configuration language, type-safe JSON/YAML alternative
+
+| *Racket*
+| Language-oriented programming, DSLs
+
+| *Nix*
+| Package derivations, flakes
+|===
+
+==== Restricted (Blocked by CI)
+
+[cols="1,2,2", options="header"]
+|===
+| Language | Why Blocked | Alternative
+
+| TypeScript
+| Unsound type system, npm ecosystem
+| ReScript or Deno
+
+| Go
+| Error handling, generics, ecosystem
+| Rust
+
+| Python
+| Dynamic typing, dependency hell
+| Only allowed for SaltStack
+
+| JavaScript
+| Everything TypeScript + no types
+| ReScript
+
+| C/C++
+| Memory unsafety
+| Zig or Rust
+|===
+
+The `rsr-antipattern.yml` workflow enforces these rules automatically.
+
+== Quick Start
+
+=== Creating a New Project
+
+[source,bash]
+----
+# Option 1: GitHub template
+gh repo create my-project --template hyperpolymath/RSR-template-repo
+cd my-project
+
+# Option 2: Manual clone
+git clone https://github.com/hyperpolymath/RSR-template-repo my-project
+cd my-project
+rm -rf .git && git init
+
+# Replace placeholders
+export OWNER="your-username"
+export REPO="my-project"
+export PROJECT="My Project"
+
+find . -type f -name "*.md" -o -name "*.adoc" -o -name "*.json" -o -name "*.yml" | \
+  xargs sed -i "s/{{OWNER}}/$OWNER/g; s/{{REPO}}/$REPO/g; s/{{PROJECT_NAME}}/$PROJECT/g"
+----
+
+=== Development Environment
+
+[source,bash]
+----
+# Guix (primary)
+guix shell -D -f guix.scm
+
+# Nix (fallback)
+nix develop
+
+# Validate setup
+just check      # Run all checks
+just test       # Run tests
+just validate   # RSR compliance
+----
+
+=== Essential Customisation
+
+1. *Update `codemeta.json`*: Project name, description, authors
+2. *Configure `.well-known/provenance.json`*: Canonical URL, mirrors, verification
+3. *Edit `SECURITY.md`*: Replace `{{PLACEHOLDERS}}` with your details
+4. *Review `.claude/CLAUDE.md`*: Adjust AI guidelines for your stack
+5. *Enable GitHub Features*:
+   - Settings → Security → Enable Dependabot alerts
+   - Settings → Security → Enable secret scanning
+   - Settings → Branches → Add branch protection
+
+== The Ecosystem
+
+=== Related Projects
+
+[cols="1,3", options="header"]
+|===
+| Project | Description
+
+| https://github.com/hyperpolymath/elegant-STATE[elegant-STATE]
+| STATE.scm tooling—conversation checkpoints for AI assistants
+
+| https://github.com/hyperpolymath/conative-gating[conative-gating]
+| Policy enforcement middleware
+
+| https://github.com/hyperpolymath/consent-aware-http[consent-aware-http]
+| HTTP 430 Consent Required specification
+
+| https://github.com/hyperpolymath/well-known-ecosystem[well-known-ecosystem]
+| `.well-known/` file templates and tooling
+|===
+
+=== Forge Integration
+
+[cols="1,1,2", options="header"]
+|===
+| Forge | Role | Sync Method
+
+| *GitHub*
+| Primary (canonical)
+| Source of truth
+
+| *GitLab*
+| Mirror
+| Automated via `.gitlab-ci.yml`
+
+| *Codeberg*
+| Mirror (planned)
+| Gitea Actions
+
+| *Sourcehut*
+| Mirror (planned)
+| builds.sr.ht
+|===
+
+== STATE.scm: Project State Tracking
+
+RSR projects use `STATE.scm` to track project lifecycle:
 
 [source,scheme]
 ----
 (define state
   `((metadata
      (project . "my-project")
-     (updated . "2025-12-10"))
+     (version . "0.2.0")
+     (updated . "2025-12-23"))
     (position
      (phase . implementation)  ; design|implementation|testing|maintenance|archived
      (maturity . beta))        ; experimental|alpha|beta|production|lts
     (ecosystem
      (part-of . ("RSR Framework"))
-     (depends-on . ()))))
+     (depends-on . ()))
+    (compliance
+     (rsr-tier . 1)
+     (slsa-level . 3))))
 ----
 
-== Badge Schema
+This enables:
+* Automated badge generation
+* Ecosystem dependency graphs
+* Phase-appropriate CI rules
+* AI assistant context
 
-Generate badges from STATE.scm:
+== Contributing
 
-[source,bash]
+See link:CONTRIBUTING.md[CONTRIBUTING.md] for full guidelines.
+
+=== Key Points
+
+* *Follow the language hierarchy*: Tier 1 preferred, justification required for Tier 2
+* *Sign your commits*: GPG or SSH signatures required for merge
+* *Conventional commits*: `type(scope): description`
+* *Security first*: Read SECURITY.md before reporting vulnerabilities
+
+== Roadmap
+
+See link:ROADMAP.adoc[ROADMAP.adoc] for the complete v10+ vision.
+
+=== Milestone Summary
+
+[cols="1,3", options="header"]
+|===
+| Version | Focus
+
+| v1.0
+| Foundation—template complete, CI enforcement, basic consent
+
+| v2.0
+| Self-enforcing trust network, cross-project reputation
+
+| v5.0
+| Consent protocol middleware, HTTP 430 reference implementation
+
+| v10.0
+| Decentralised provenance chain, formal verification integration
+|===
+
+== Licence
+
+[source]
 ----
-just badges standard
+SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Palimpsest-0.5
 ----
 
-See `docs/BADGE_SCHEMA.adoc` for the full badge taxonomy.
+* *AGPL-3.0-or-later*: Network copyleft—modifications must be shared
+* *Palimpsest-0.5*: Attribution philosophy—code is a living document
 
-== Ecosystem Integration
+See link:LICENSE.txt[LICENSE.txt] for full terms.
 
-This template is part of:
+== Acknowledgements
 
-* **STATE.scm Ecosystem**: Conversation checkpoints
-* **RSR Framework**: Repository standards
-* **Consent-Aware-HTTP**: .well-known compliance
+* The https://guix.gnu.org[GNU Guix] project for reproducible computing
+* https://slsa.dev[SLSA Framework] for provenance standards
+* https://www.rfc-editor.org/rfc/rfc9116[RFC 9116] authors for security.txt
+* The https://sigstore.dev[Sigstore] project for keyless signing
+* All contributors to the RSR ecosystem
 
-== License
+---
 
-SPDX-License-Identifier: `AGPL-3.0-or-later OR LicenseRef-Palimpsest-0.5`
+[.text-center]
+_Built with intention. Secured by design. Open by default._
 
-== Links
-
-* https://github.com/hyperpolymath/elegant-STATE[elegant-STATE] - STATE.scm tooling
-* https://github.com/hyperpolymath/conative-gating[conative-gating] - Policy enforcement
-* https://rhodium.sh[Rhodium Standard] - RSR documentation
+[.text-center]
+image::https://hyperpolymath.org/badges/rsr-infrastructure.svg[RSR Infrastructure]
