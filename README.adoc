@@ -1,6 +1,6 @@
 = RSR Template Repository
 Jonathan D.A. Jewell <jonathan@hyperpolymath.org>
-v0.3.0, 2025-12-24
+v0.4.0, 2025-12-24
 :toc: macro
 :toc-title: Contents
 :toclevels: 4
@@ -240,11 +240,11 @@ RSR enforces a curated language hierarchy based on safety, expressiveness, and e
 |===
 | Language | Use Case
 
-| *ATS*
-| Proofs-as-types. Dependent types + linear types = memory safety, bounds checking, and resource management proven at compile time. If it compiles, it's correct. Compiles to C for zero overhead.
+| *Idris 2*
+| Proofs-as-types with Quantitative Type Theory (QTT). Dependent types + quantities (0, 1, ω) = memory safety, resource management, and erasure control proven at compile time. If it compiles, it's correct. First-class totality checking.
 |===
 
-NOTE: ATS has a steep learning curve and minimal ecosystem. Use when correctness is non-negotiable and you can invest in the type-level proofs.
+NOTE: Idris 2 has a steep learning curve but excellent resources (Edwin Brady's "Type-Driven Development"). Use when correctness is non-negotiable and you want the most expressive type system available.
 
 ==== Tier 1: Gold Standard (Preferred)
 
