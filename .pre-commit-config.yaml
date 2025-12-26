@@ -1,0 +1,128 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# RSR Pre-commit Configuration
+# https://pre-commit.com
+#
+# Install: pip install pre-commit && pre-commit install
+# Or with Guix: guix install pre-commit && pre-commit install
+
+default_stages: [commit]
+fail_fast: false
+
+repos:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Security: Secret Detection (CRITICAL)
+  # ═══════════════════════════════════════════════════════════════════════════
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.4
+    hooks:
+      - id: gitleaks
+        name: "🔐 Detect secrets (gitleaks)"
+        stages: [commit, push]
+
+  - repo: https://github.com/trufflesecurity/trufflehog
+    rev: v3.63.5
+    hooks:
+      - id: trufflehog
+        name: "🔐 Detect secrets (trufflehog)"
+        entry: trufflehog git file://. --since-commit HEAD --only-verified --fail
+        stages: [push]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # General: File hygiene
+  # ═══════════════════════════════════════════════════════════════════════════
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        name: "📝 Trim trailing whitespace"
+        exclude: "\\.(md|adoc)$"
+      - id: end-of-file-fixer
+        name: "📝 Fix end of file"
+      - id: check-yaml
+        name: "📋 Check YAML syntax"
+      - id: check-json
+        name: "📋 Check JSON syntax"
+      - id: check-toml
+        name: "📋 Check TOML syntax"
+      - id: check-added-large-files
+        name: "📦 Check for large files"
+        args: ['--maxkb=500']
+      - id: check-merge-conflict
+        name: "🔀 Check for merge conflicts"
+      - id: check-case-conflict
+        name: "📁 Check case conflicts"
+      - id: detect-private-key
+        name: "🔑 Detect private keys"
+      - id: check-executables-have-shebangs
+        name: "🔧 Check shebangs"
+      - id: check-shebang-scripts-are-executable
+        name: "🔧 Check script permissions"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # EditorConfig
+  # ═══════════════════════════════════════════════════════════════════════════
+  - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
+    rev: 2.7.3
+    hooks:
+      - id: editorconfig-checker
+        name: "📐 EditorConfig check"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Conventional Commits
+  # ═══════════════════════════════════════════════════════════════════════════
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.0.0
+    hooks:
+      - id: conventional-pre-commit
+        name: "📝 Conventional commit message"
+        stages: [commit-msg]
+        args: [feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert, security]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # RSR Anti-Pattern Check (Custom)
+  # ═══════════════════════════════════════════════════════════════════════════
+  - repo: local
+    hooks:
+      - id: rsr-antipattern
+        name: "🛡️ RSR anti-pattern check"
+        entry: bash -c '
+          # Check for TypeScript
+          if find . -name "*.ts" -o -name "*.tsx" | grep -v node_modules | grep -q .; then
+            echo "❌ TypeScript detected - use ReScript instead"
+            exit 1
+          fi
+          # Check for Go
+          if find . -name "*.go" | grep -q .; then
+            echo "❌ Go detected - use Rust instead"
+            exit 1
+          fi
+          # Check for npm lockfiles
+          if [ -f "package-lock.json" ] || [ -f "yarn.lock" ]; then
+            echo "❌ npm/yarn lockfile detected - use Deno"
+            exit 1
+          fi
+          echo "✅ RSR language policy: OK"
+        '
+        language: system
+        pass_filenames: false
+
+      - id: no-http-urls
+        name: "🔒 No HTTP URLs (HTTPS only)"
+        entry: bash -c '
+          if grep -rE "http://" --include="*.rs" --include="*.idr" --include="*.ex" . 2>/dev/null | grep -vE "localhost|127\.0\.0\.1|http://example" | head -1; then
+            echo "❌ HTTP URL detected - use HTTPS"
+            exit 1
+          fi
+          echo "✅ HTTPS only: OK"
+        '
+        language: system
+        pass_filenames: false
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CI Configuration
+# ═══════════════════════════════════════════════════════════════════════════════
+ci:
+  autofix_commit_msg: "style: auto-fix pre-commit issues"
+  autofix_prs: true
+  autoupdate_commit_msg: "chore: update pre-commit hooks"
+  autoupdate_schedule: weekly

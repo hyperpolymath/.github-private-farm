@@ -3,52 +3,107 @@
 
 * text=auto eol=lf
 
-# Source
+# ═══════════════════════════════════════════════════════════════════════════════
+# Tier 0: Idris 2 (QTT)
+# ═══════════════════════════════════════════════════════════════════════════════
+*.idr   text eol=lf
+*.ipkg  text eol=lf
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Tier 1: Gold Standard
+# ═══════════════════════════════════════════════════════════════════════════════
 *.rs    text eol=lf diff=rust
-*.ex    text eol=lf diff=elixir
-*.exs   text eol=lf diff=elixir
-*.jl    text eol=lf
-*.res   text eol=lf
-*.resi  text eol=lf
+*.zig   text eol=lf
 *.ada   text eol=lf diff=ada
 *.adb   text eol=lf diff=ada
 *.ads   text eol=lf diff=ada
-*.hs    text eol=lf
-*.chpl  text eol=lf
-*.scm   text eol=lf
+*.hs    text eol=lf diff=haskell
+*.lhs   text eol=lf diff=haskell
+*.ex    text eol=lf diff=elixir
+*.exs   text eol=lf diff=elixir
+*.res   text eol=lf
+*.resi  text eol=lf
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Tier 2: Silver
+# ═══════════════════════════════════════════════════════════════════════════════
+*.scm   text eol=lf diff=scheme
+*.ss    text eol=lf diff=scheme
+*.rkt   text eol=lf
 *.ncl   text eol=lf
 *.nix   text eol=lf
 
-# Docs
+# ═══════════════════════════════════════════════════════════════════════════════
+# Other Languages (Research/Legacy)
+# ═══════════════════════════════════════════════════════════════════════════════
+*.jl    text eol=lf
+*.chpl  text eol=lf
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Documentation
+# ═══════════════════════════════════════════════════════════════════════════════
 *.md    text eol=lf diff=markdown
 *.adoc  text eol=lf
 *.txt   text eol=lf
+*.rst   text eol=lf
 
-# Data
+# ═══════════════════════════════════════════════════════════════════════════════
+# Data & Config
+# ═══════════════════════════════════════════════════════════════════════════════
 *.json  text eol=lf
 *.yaml  text eol=lf
 *.yml   text eol=lf
 *.toml  text eol=lf
+*.xml   text eol=lf
 
-# Config
-.gitignore     text eol=lf
-.gitattributes text eol=lf
-justfile       text eol=lf
-Makefile       text eol=lf
-Containerfile  text eol=lf
+# ═══════════════════════════════════════════════════════════════════════════════
+# Infrastructure
+# ═══════════════════════════════════════════════════════════════════════════════
+.gitignore       text eol=lf
+.gitattributes   text eol=lf
+.editorconfig    text eol=lf
+justfile         text eol=lf
+Justfile         text eol=lf
+Makefile         text eol=lf
+Containerfile    text eol=lf
+Dockerfile       text eol=lf
 
+# ═══════════════════════════════════════════════════════════════════════════════
 # Scripts
-*.sh   text eol=lf
+# ═══════════════════════════════════════════════════════════════════════════════
+*.sh    text eol=lf
+*.bash  text eol=lf
 
-# Binary
+# ═══════════════════════════════════════════════════════════════════════════════
+# Binary (No merge, no diff)
+# ═══════════════════════════════════════════════════════════════════════════════
 *.png   binary
 *.jpg   binary
+*.jpeg  binary
 *.gif   binary
+*.ico   binary
+*.webp  binary
+*.svg   text eol=lf
 *.pdf   binary
+*.woff  binary
 *.woff2 binary
+*.ttf   binary
+*.otf   binary
 *.zip   binary
 *.gz    binary
+*.tar   binary
+*.xz    binary
 
-# Lock files
+# ═══════════════════════════════════════════════════════════════════════════════
+# Lock files (Track but don't diff)
+# ═══════════════════════════════════════════════════════════════════════════════
 Cargo.lock  text eol=lf -diff
 flake.lock  text eol=lf -diff
+mix.lock    text eol=lf -diff
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Linguist overrides (for GitHub stats)
+# ═══════════════════════════════════════════════════════════════════════════════
+*.idr   linguist-language=Idris
+*.ncl   linguist-language=Nickel
+docs/** linguist-documentation

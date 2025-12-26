@@ -1,108 +1,55 @@
-# RSR-template-repo - Editor Configuration
-# https://editorconfig.org
 # SPDX-License-Identifier: AGPL-3.0-or-later
-
-root = true
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# Default (all files)
-# ═══════════════════════════════════════════════════════════════════════════════
-[*]
-charset = utf-8
-end_of_line = lf
-indent_size = 2
-indent_style = space
-insert_final_newline = true
-trim_trailing_whitespace = true
-max_line_length = 100
+# RSR CODEOWNERS - Defines code ownership for mandatory review
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# Tier 0: Idris 2 (QTT)
+# Default: All files require maintainer review
 # ═══════════════════════════════════════════════════════════════════════════════
-[*.idr]
-indent_size = 2
-
-[*.ipkg]
-indent_size = 2
+*                                   @hyperpolymath
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# Tier 1: Gold Standard
+# Security-Critical Files (Require explicit security review)
 # ═══════════════════════════════════════════════════════════════════════════════
-[*.rs]
-indent_size = 4
-max_line_length = 100
-
-[*.zig]
-indent_size = 4
-
-[*.{ada,adb,ads}]
-indent_size = 3
-
-[*.{hs,lhs}]
-indent_size = 2
-
-[*.{ex,exs}]
-indent_size = 2
-
-[*.{res,resi}]
-indent_size = 2
+SECURITY.md                         @hyperpolymath
+.github/workflows/security-policy.yml @hyperpolymath
+.github/workflows/codeql.yml        @hyperpolymath
+.github/workflows/scorecard.yml     @hyperpolymath
+.well-known/security.txt            @hyperpolymath
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# Tier 2: Silver
+# CI/CD Pipelines (Infrastructure changes need careful review)
 # ═══════════════════════════════════════════════════════════════════════════════
-[*.{scm,ss}]
-indent_size = 2
-
-[*.rkt]
-indent_size = 2
-
-[*.ncl]
-indent_size = 2
-
-[*.nix]
-indent_size = 2
+.github/workflows/                  @hyperpolymath
+.gitlab-ci.yml                      @hyperpolymath
+justfile                            @hyperpolymath
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# Documentation
+# Package Management (Supply chain security)
 # ═══════════════════════════════════════════════════════════════════════════════
-[*.md]
-trim_trailing_whitespace = false
-max_line_length = off
-
-[*.adoc]
-trim_trailing_whitespace = false
-max_line_length = off
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# Data & Config
-# ═══════════════════════════════════════════════════════════════════════════════
-[*.{json,yaml,yml}]
-indent_size = 2
-
-[*.toml]
-indent_size = 2
+guix.scm                            @hyperpolymath
+flake.nix                           @hyperpolymath
+flake.lock                          @hyperpolymath
+Cargo.toml                          @hyperpolymath
+Cargo.lock                          @hyperpolymath
+*.ipkg                              @hyperpolymath
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# Infrastructure
+# Consent & Provenance (Legal/Ethical compliance)
 # ═══════════════════════════════════════════════════════════════════════════════
-[{Justfile,justfile}]
-indent_style = space
-indent_size = 4
-
-[Makefile]
-indent_style = tab
-
-[{Containerfile,Dockerfile}]
-indent_size = 4
-
-[*.sh]
-indent_size = 2
+.well-known/                        @hyperpolymath
+LICENSE*                            @hyperpolymath
+codemeta.json                       @hyperpolymath
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# GitHub/GitLab
+# Container Security (Image provenance)
 # ═══════════════════════════════════════════════════════════════════════════════
-[.github/**/*]
-indent_size = 2
+Containerfile                       @hyperpolymath
+Dockerfile                          @hyperpolymath
 
-[.gitlab-ci.yml]
-indent_size = 2
+# ═══════════════════════════════════════════════════════════════════════════════
+# Configuration (AI assistants, editor config)
+# ═══════════════════════════════════════════════════════════════════════════════
+.claude/                            @hyperpolymath
+.editorconfig                       @hyperpolymath
+.gitattributes                      @hyperpolymath
+.gitignore                          @hyperpolymath

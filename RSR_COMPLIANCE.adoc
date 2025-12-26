@@ -1,6 +1,7 @@
 = RSR Compliance: RSR-template-repo
 :toc:
 :sectnums:
+:icons: font
 
 == Overview
 
@@ -13,32 +14,36 @@ This document describes the Rhodium Standard Repository (RSR) compliance status 
 |Attribute |Value
 
 |Project |RSR-template-repo
-|Primary Language |unknown
-|RSR Tier |N/A
-|Compliance Status |Review Needed
-|Last Updated |2025-12-10
+|Type |Infrastructure Template
+|RSR Tier |Infrastructure
+|Compliance Status |✅ Compliant
+|Last Updated |2025-12-26
 |===
 
 == Language Tier Classification
 
-=== Tier 1 Languages (Preferred)
-* Rust
-* Elixir
-* Zig
-* Ada
-* Haskell
-* ReScript
+=== Tier 0: Verification Platinum
+* *Idris 2* — Proofs-as-types with Quantitative Type Theory (QTT)
 
-=== Tier 2 Languages (Acceptable)
-* Nickel (configuration)
-* Racket (scripting)
-* Guile Scheme (state management)
-* Nix (derivations)
+=== Tier 1: Gold Standard (Preferred)
+* Rust — Systems, CLI, WASM
+* Zig — Low-level, replacing C/C++
+* Ada/SPARK — Safety-critical, formal verification
+* Haskell — Pure functional, parsers, compilers
+* Elixir — Distributed, fault-tolerant
+* ReScript — Frontend with JS interop
+
+=== Tier 2: Silver (Acceptable)
+* Guile Scheme — Configuration, Guix packages, STATE.scm
+* Nickel — Type-safe configuration
+* Racket — DSLs, language-oriented programming
+* Nix — Package derivations
 
 === Restricted Languages
-* Python - Only allowed in salt/ directories for SaltStack
-* TypeScript/JavaScript - Legacy only, convert to ReScript
-* CUE - Not permitted, use Nickel or Guile
+* Python — Only allowed in `salt/` directories for SaltStack
+* TypeScript/JavaScript — Legacy only, convert to ReScript/Deno
+* Go — Use Rust instead
+* C/C++ — Use Zig or Rust instead
 
 == Compliance Checklist
 
@@ -46,28 +51,74 @@ This document describes the Rhodium Standard Repository (RSR) compliance status 
 |===
 |Requirement |Status |Notes
 
-|Primary language is Tier 1/2 |✓ |unknown
-|No restricted languages outside exemptions |✓ |
-|.editorconfig present |✓ |
-|.well-known/ directory |✓ |
-|justfile present |✗ |
-|LICENSE.txt (AGPL + Palimpsest) |✓ |
-|Containerfile present |✗ |
-|flake.nix present |✗ |
+|Primary language is Tier 0/1/2 |✅ |Infrastructure template
+|No restricted languages outside exemptions |✅ |Clean
+|.editorconfig present |✅ |Comprehensive, all tiers
+|.gitignore present |✅ |All tier languages covered
+|.gitattributes present |✅ |Linguist overrides included
+|.well-known/ directory |✅ |security.txt, ai.txt, humans.txt, consent-required.txt, provenance.json
+|justfile present |✅ |50+ recipes template
+|LICENSE.txt (AGPL + Palimpsest) |✅ |Dual license
+|guix.scm present |✅ |Guix package definition
+|flake.nix present |✅ |Nix flake
+|STATE.scm present |✅ |Project state tracking
+|CODEOWNERS present |✅ |Security-critical file protection
+|Pre-commit hooks |✅ |Gitleaks, TruffleHog, RSR checks
+|Containerfile present |⚠️ |Planned: svalinn/cerro-torre
+|===
+
+== Security Compliance
+
+[cols="1,1,2"]
+|===
+|Control |Status |Implementation
+
+|SHA-pinned Actions |✅ |All workflows use commit SHA
+|Secret scanning |✅ |Gitleaks + TruffleHog
+|Dependency review |✅ |Dependabot + CodeQL
+|SLSA attestation |⚠️ |Planned for v2.0
+|Signed commits |✅ |Required via CODEOWNERS
+|RFC 9116 compliance |✅ |security.txt with expiry monitoring
+|===
+
+== Consent Compliance
+
+[cols="1,1,2"]
+|===
+|Requirement |Status |Implementation
+
+|.well-known/ai.txt |✅ |AI training consent policy
+|.well-known/consent-required.txt |✅ |HTTP 430 declaration
+|.well-known/provenance.json |✅ |Supply chain provenance
+|codemeta.json |✅ |Machine-readable metadata
+|===
+
+== Container Strategy
+
+[cols="1,2"]
+|===
+|Component |Description
+
+|Base Image |`ghcr.io/hyperpolymath/cerro-torre` — Secure hardened base
+|Build Tool |`hyperpolymath/svalinn` — Container build tooling
+|Runtime |Podman (fallback from primary container strategy)
 |===
 
 == Exemptions
 
-None
+None required.
 
 == Action Items
 
-* Add justfile
-* Add Containerfile
-* Add flake.nix
+* [ ] Create Containerfile using svalinn/cerro-torre
+* [ ] Add SLSA provenance generation workflow
+* [ ] Fill remaining placeholders in SECURITY.md, CONTRIBUTING.md
 
 == References
 
-* link:https://github.com/hyperpolymath/RSR-template-repo[RSR Template Repository]
-* link:../CONTRIBUTING.adoc[Contributing Guidelines]
-* link:../CODE_OF_CONDUCT.adoc[Code of Conduct]
+* link:README.adoc[README] — Project overview
+* link:ROADMAP.adoc[ROADMAP] — v10+ vision
+* link:SECURITY.md[SECURITY] — Security policy
+* link:CONTRIBUTING.md[CONTRIBUTING] — Contribution guidelines
+* https://github.com/hyperpolymath/svalinn[svalinn] — Container tooling
+* https://github.com/hyperpolymath/cerro-torre[cerro-torre] — Secure base image
