@@ -1,0 +1,148 @@
+= RSR Test Suite
+:toc:
+:icons: font
+
+== Overview
+
+This directory contains the test infrastructure for RSR-template-repo.
+
+== Test Organisation
+
+[source]
+----
+tests/
+├── README.adoc          # This file
+├── unit/                # Unit tests (per-module)
+├── integration/         # Integration tests (cross-module)
+├── property/            # Property-based tests (QuickCheck-style)
+├── spec/                # Specification tests
+└── fixtures/            # Test data and fixtures
+----
+
+== Running Tests
+
+[source,bash]
+----
+# Run all tests
+just test
+
+# Run with verbose output
+just test-verbose
+
+# Run with coverage
+just test-coverage
+
+# Run specific test suite
+just test unit
+just test integration
+just test property
+----
+
+== Test Tiers (RSR Verification)
+
+[cols="1,2,2"]
+|===
+| Tier | Type | Purpose
+
+| Bronze
+| Unit + Integration
+| Basic correctness
+
+| Silver
+| Property-based
+| Invariant verification
+
+| Gold
+| Specification
+| Formal spec compliance
+
+| Platinum
+| Type-level (Idris 2)
+| Proofs-as-types
+|===
+
+== Language-Specific Testing
+
+=== Idris 2 (Tier 0)
+
+[source,idris]
+----
+-- Tests are proofs - if it compiles, it passes
+total
+testVectorAppend : (xs : Vect n a) -> (ys : Vect m a) ->
+                   length (xs ++ ys) = n + m
+testVectorAppend [] ys = Refl
+testVectorAppend (x :: xs) ys = cong S (testVectorAppend xs ys)
+----
+
+=== Rust (Tier 1)
+
+[source,rust]
+----
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use proptest::prelude::*;
+
+    #[test]
+    fn test_basic() {
+        assert!(true);
+    }
+
+    proptest! {
+        #[test]
+        fn prop_reversible(s: String) {
+            let reversed: String = s.chars().rev().collect();
+            let double_reversed: String = reversed.chars().rev().collect();
+            prop_assert_eq!(s, double_reversed);
+        }
+    }
+}
+----
+
+=== Elixir (Tier 1)
+
+[source,elixir]
+----
+defmodule MyModuleTest do
+  use ExUnit.Case, async: true
+  use ExUnitProperties
+
+  test "basic test" do
+    assert true
+  end
+
+  property "reversible" do
+    check all list <- list_of(integer()) do
+      assert list |> Enum.reverse() |> Enum.reverse() == list
+    end
+  end
+end
+----
+
+== Coverage Requirements
+
+[cols="1,1,2"]
+|===
+| Metric | Minimum | Notes
+
+| Line Coverage
+| 80%
+| New code must not decrease
+
+| Branch Coverage
+| 70%
+| Critical paths require 100%
+
+| Mutation Score
+| 60%
+| For security-critical code
+|===
+
+== CI Integration
+
+Tests are run automatically via:
+
+* `.github/workflows/quality.yml` - On every push/PR
+* `.gitlab-ci.yml` - For GitLab mirrors
+* `just ci` - Local CI simulation
