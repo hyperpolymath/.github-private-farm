@@ -64,7 +64,8 @@ This document describes the Rhodium Standard Repository (RSR) compliance status 
 |STATE.scm present |✅ |Project state tracking
 |CODEOWNERS present |✅ |Security-critical file protection
 |Pre-commit hooks |✅ |Gitleaks, TruffleHog, RSR checks
-|Containerfile present |⚠️ |Planned: svalinn/cerro-torre
+|Containerfile present |✅ |Using svalinn/cerro-torre
+|tests/ directory |✅ |Test infrastructure with README
 |===
 
 == Security Compliance
@@ -76,9 +77,9 @@ This document describes the Rhodium Standard Repository (RSR) compliance status 
 |SHA-pinned Actions |✅ |All workflows use commit SHA
 |Secret scanning |✅ |Gitleaks + TruffleHog
 |Dependency review |✅ |Dependabot + CodeQL
-|SLSA attestation |⚠️ |Planned for v2.0
+|SLSA attestation |✅ |slsa-provenance.yml workflow
 |Signed commits |✅ |Required via CODEOWNERS
-|RFC 9116 compliance |✅ |security.txt with expiry monitoring
+|RFC 9116 compliance |✅ |security.txt with expiry 2026-12-26
 |===
 
 == Consent Compliance
@@ -110,9 +111,12 @@ None required.
 
 == Action Items
 
-* [ ] Create Containerfile using svalinn/cerro-torre
-* [ ] Add SLSA provenance generation workflow
-* [ ] Fill remaining placeholders in SECURITY.md, CONTRIBUTING.md
+* [x] Create Containerfile using svalinn/cerro-torre
+* [x] Add SLSA provenance generation workflow
+* [x] Fill remaining placeholders in SECURITY.md, CONTRIBUTING.md
+* [x] Create tests/ infrastructure
+
+All action items completed as of 2025-12-26.
 
 == References
 

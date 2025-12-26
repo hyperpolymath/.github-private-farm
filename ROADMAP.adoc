@@ -364,7 +364,29 @@ Move from centralised attestation to decentralised verification:
 
 === Vision
 
-For critical code paths, move beyond testing to mathematical proof. RSR projects can include SPARK proofs, Coq specifications, or TLA+ models.
+For critical code paths, move beyond testing to mathematical proof. The gold standard is *Idris 2*—where proofs ARE types and Quantitative Type Theory gives you fine-grained control over resource usage—with SPARK and proof assistants as pragmatic alternatives.
+
+=== The Idris 2 Philosophy
+
+[quote, Core Insight]
+____
+In Idris 2, if your code compiles, your proofs are valid. The type system IS the theorem prover. Quantitative Type Theory means you control exactly how many times each value is used.
+____
+
+Idris 2 with Quantitative Type Theory (QTT) combines:
+
+* *Dependent types*: Types that depend on values (e.g., `Vect n a` — a vector of exactly `n` elements)
+* *Quantitative types*: Resources annotated with usage (0 = erased, 1 = linear, ω = unrestricted)
+* *Totality checking*: First-class guarantee that functions terminate and cover all cases
+* *Theorem proving*: Propositions encoded as types, proofs as programs
+
+This means:
+
+* Memory safety with fine-grained control—*proven*
+* Compile-time proofs that vanish at runtime (0 quantity)—*zero overhead*
+* Resource cleanup guaranteed (1 quantity)—*proven*
+* If it compiles, the invariants hold
+* If it's total, it terminates
 
 === Verification Tiers
 
@@ -615,4 +637,4 @@ See link:CONTRIBUTING.md[CONTRIBUTING.md] to get started.
 _The future of software is verifiable, consent-aware, and trustworthy by default._
 
 [.text-center]
-Version History: 2025-12-23 (v0.2.0) • Initial vision document
+Version History: 2025-12-24 (v0.4.0) • Switched to Idris 2 (QTT) as Tier 0 verification language
