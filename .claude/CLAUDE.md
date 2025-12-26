@@ -1,52 +1,70 @@
-# Project Instructions
+# CLAUDE.md - AI Assistant Instructions
 
-## ⚠️ CONVERSION NEEDED: npm → Deno
+## Language Policy (Hyperpolymath Standard)
 
-This repo currently uses npm but needs to be converted to Deno.
+### ALLOWED Languages & Tools
 
-### DO NOT:
-- Run `npm install`
-- Add new npm dependencies
-- Create package-lock.json
+| Language/Tool | Use Case | Notes |
+|---------------|----------|-------|
+| **ReScript** | Primary application code | Compiles to JS, type-safe |
+| **Deno** | Runtime & package management | Replaces Node/npm/bun |
+| **Rust** | Performance-critical, systems, WASM | Preferred for CLI tools |
+| **Tauri 2.0+** | Mobile apps (iOS/Android) | Rust backend + web UI |
+| **Dioxus** | Mobile apps (native UI) | Pure Rust, React-like |
+| **Gleam** | Backend services | Runs on BEAM or compiles to JS |
+| **Bash/POSIX Shell** | Scripts, automation | Keep minimal |
+| **JavaScript** | Only where ReScript cannot | MCP protocol glue, Deno APIs |
+| **Python** | SaltStack only | No other Python permitted |
+| **Nickel** | Configuration language | For complex configs |
+| **Guile Scheme** | State/meta files | STATE.scm, META.scm, ECOSYSTEM.scm |
+| **Julia** | Batch scripts, data processing | Per RSR |
+| **OCaml** | AffineScript compiler | Language-specific |
+| **Ada** | Safety-critical systems | Where required |
 
-### INSTEAD:
-- Use `deno task` for scripts
-- Use npm: specifiers for dependencies (e.g., `import X from "npm:package"`)
-- Create deno.json instead of package.json
+### BANNED - Do Not Use
 
-### Conversion Steps:
-1. Analyze package.json dependencies
-2. Create deno.json with equivalent imports/tasks
-3. Update source files to use Deno imports
-4. Remove package.json and package-lock.json
-5. Test with `deno check` and `deno test`
+| Banned | Replacement |
+|--------|-------------|
+| TypeScript | ReScript |
+| Node.js | Deno |
+| npm | Deno |
+| Bun | Deno |
+| pnpm/yarn | Deno |
+| Go | Rust |
+| Python (general) | ReScript/Rust |
+| Java/Kotlin | Rust/Tauri/Dioxus |
+| Swift | Tauri/Dioxus |
+| React Native | Tauri/Dioxus |
+| Flutter/Dart | Tauri/Dioxus |
 
-## Package Manager Policy (RSR)
+### Mobile Development
 
-- **REQUIRED**: Deno for JavaScript/TypeScript
-- **FORBIDDEN**: npm, npx, node_modules (after conversion)
-- **FALLBACK**: Bun only if Deno is impossible
+**No exceptions for Kotlin/Swift** - use Rust-first approach:
 
-## Language & Security Policy (RSR)
+1. **Tauri 2.0+** - Web UI (ReScript) + Rust backend, MIT/Apache-2.0
+2. **Dioxus** - Pure Rust native UI, MIT/Apache-2.0
 
-### Allowed Languages (Primary → Fallback)
-- **Systems/ML**: Rust
-- **Web/Scripts**: ReScript → TypeScript (legacy only)
-- **TUI**: Ada/SPARK
-- **WordPress**: PHP (with security CI)
-- **LSP**: Java (exception for IDE compatibility)
+Both are FOSS with independent governance (no Big Tech).
 
-### Banned Languages
-- Python (except SaltStack)
-- Ruby (use Rust/Ada/Crystal)
-- Perl (use Rust)
-- New Java/Kotlin (except LSP)
+### Enforcement Rules
+
+1. **No new TypeScript files** - Convert existing TS to ReScript
+2. **No package.json for runtime deps** - Use deno.json imports
+3. **No node_modules in production** - Deno caches deps automatically
+4. **No Go code** - Use Rust instead
+5. **Python only for SaltStack** - All other Python must be rewritten
+6. **No Kotlin/Swift for mobile** - Use Tauri 2.0+ or Dioxus
 
 ### Package Management
+
 - **Primary**: Guix (guix.scm)
 - **Fallback**: Nix (flake.nix)
+- **JS deps**: Deno (deno.json imports)
 
 ### Security Requirements
+
 - No MD5/SHA1 for security (use SHA256+)
 - HTTPS only (no HTTP URLs)
 - No hardcoded secrets
+- SHA-pinned dependencies
+- SPDX license headers on all files
