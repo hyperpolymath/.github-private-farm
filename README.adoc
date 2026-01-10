@@ -1,1 +1,2 @@
+image:https://img.shields.io/badge/license-PMPL--1.0-blue.svg[License,link="https://github.com/hyperpolymath/palimpsest-license"]
 🚀 High-compute reusable workflow farm for @hyperpolymath projects. Centralised matrix testing (Linux/macOS/Windows) for hub-and-spoke mirroring to GitLab, Codeberg, and Bitbucket. 
